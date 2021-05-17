@@ -18,7 +18,7 @@ export default class Wallet {
   constructor(initialBalance: number) {
     this.balance = initialBalance;
     this.moneyHistory = new Array();
-    this.moneyHistory.push({
+    this.addHistory({
       date: new Date(),
       difference: initialBalance,
       balance: initialBalance,
@@ -26,34 +26,21 @@ export default class Wallet {
   }
 
   /**
-   * 入出金履歴の作成
+   *　入出金履歴の作成
    *
    * @private
-   * @param {Date} inputDate 日時
-   * @param {number} inputDifference 入出金額
-   * @param {number} inputBalance さ
-   * @memberof Wallet 銀行口座クラスのメンバです
+   * @param {DepositWithdrawalHistory} history 履歴
+   * @memberof Wallet 口座クラスのメンバ
    */
-  private addHistory(
-    inputDate: Date,
-    inputDifference: number,
-    inputBalance: number
-  ) {
-    this.moneyHistory = [
-      {
-        date: inputDate,
-        difference: inputDifference,
-        balance: inputBalance,
-      },
-      ...this.moneyHistory,
-    ];
+  private addHistory(history: DepositWithdrawalHistory) {
+    this.moneyHistory = [history, ...this.moneyHistory];
   }
 
   /**
    * 指定された金額を入金し，残高に反映します．
    *
    * @param {number} amount 指定金額
-   * @memberof Wallet
+   * @memberof Wallet 口座クラスのメンバ
    */
   withdrawalMoney(amount: number) {
     if (amount < 0) {
@@ -61,14 +48,19 @@ export default class Wallet {
     }
     const now = new Date();
     this.balance += amount;
-    this.addHistory(now, amount, this.balance);
+    const history: DepositWithdrawalHistory = {
+      date: now,
+      difference: amount,
+      balance: this.balance,
+    };
+    this.addHistory(history);
   }
 
   /**
    * 指定した金額を出金し，残高に反映します．
    *
    * @param {number} amount 指定金額
-   * @memberof Wallet 銀行口座クラスのメンバです
+   * @memberof Wallet 銀行口座クラスのメンバ
    */
   depositMoney(amount: number) {
     if (amount < 0) {
@@ -81,14 +73,19 @@ export default class Wallet {
     }
     const now = new Date();
     this.balance = newBalance;
-    this.addHistory(now, amount, this.balance);
+    const history: DepositWithdrawalHistory = {
+      date: new Date(),
+      difference: amount,
+      balance: this.balance,
+    };
+    this.addHistory(history);
   }
 
   /**
    * 現在の残高を取得します
    *
    * @return {*}  {number}
-   * @memberof Wallet 銀行口座クラスのメンバです
+   * @memberof Wallet 銀行口座クラスのメンバ
    */
   getCurrentBalance(): number {
     return this.balance;
@@ -97,7 +94,7 @@ export default class Wallet {
   /**
    * すべての入出金履歴を最新の順に確認します
    *
-   * @return {Array}
+   * @return {Array} descSortArray 日付で降順ソートされた入出金履歴
    * @memberof Wallet 銀行口座クラスのメンバです
    */
   getHistory() {
