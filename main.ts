@@ -1,19 +1,12 @@
 import Wallet from "./Wallet";
 
-/**
- * @param {number} time
- * @return {*}
- */
 const sleep = (time: number) => {
   return new Promise((resolve) => {
     setTimeout(resolve, time);
   });
 };
 
-/**
- * 銀行口座クラスを作りメンバメソッドを実行します
- */
-const Exam = async () => {
+const Main = async () => {
   const wallet = new Wallet(10);
   wallet.withdrawalMoney(100);
   wallet.depositMoney(20);
@@ -25,4 +18,4 @@ const Exam = async () => {
   console.log(wallet.getHistory());
 };
 
-Exam();
+Main();
